@@ -1,16 +1,12 @@
 var fs = require('fs');
 
 var text = fs.readFileSync('/home/roger/Documents/scrapper/results.txt','utf8');
-var names = [];
-var proximates = [];
-var minerals = [];
-var vitamins = [];
-var lipids = [];
-var others = [];
 var foods = [];
-var name = [];
 var proximates_not_found = 0;
 var minerals_not_found = 0;
+var vitamins_not_found = 0;
+var lipids_not_found = 0;
+var others_not_found = 0;
 
 var getFoods = function(textParam){
 	var re = /Basic\sReport\n((.|\n(?!==END==))*)/g;
@@ -25,6 +21,10 @@ var getFoods = function(textParam){
 	    	var food = {};
 	    	food.name = getName(m[1]);
 	    	food.proximates = getProximates(m[1]);
+	    	food.minerals = getMinerals(m[1]);
+	    	food.vitamins = getVitamins(m[1]);
+	    	food.lipids = getLipids(m[1]);
+	    	food.other = getOthers(m[1]);
 	    	foods.push(food);
 	        console.log("Getting food #"+cont);
 	    }
@@ -60,75 +60,43 @@ var getMinerals = function(param){
     minerals_not_found++;
 };
 
-var getVitamins = function(foodsParam){
-	var re = /Vitamins\n((.*\n)*)Lipids/g;
-	var s = foodsParam;
-	var cont = 0;
-	var m;
+var getVitamins = function(param){
+	var re = /Vitamins\n((.*\n")*(.*\n))/g;
 
-	for(var i = 0; i < foodsParam.length; i++){
-		do {
-		    m = re.exec(s[i]);
-		    if (m) {
-		    	cont++;
-		    	vitamins.push(m[1]);
-		        console.log("Getting vitamin #"+cont);
-		    }
-		} while (m);
-	}
+	var m = re.exec(param);
+    if (m)
+    	return(m[1]);
+    console.log("ERROR - NO VITAMIN FOUND");
+    vitamins_not_found++;
 };
 
-var getLipids = function(foodsParam){
-	var re = /Lipids\n((.*\n)*)Other/g;
-	var s = foodsParam;
-	var cont = 0;
-	var m;
+var getLipids = function(param){
+	var re = /Lipids\n((.*\n")*(.*\n))/g;
 
-	for(var i = 0; i < foodsParam.length; i++){
-		do {
-		    m = re.exec(s[i]);
-		    if (m) {
-		    	cont++;
-		    	lipids.push(m[1]);
-		        console.log("Getting lipid #"+cont);
-		    }
-		} while (m);
-	}
+	var m = re.exec(param);
+    if (m)
+    	return(m[1]);
+    console.log("ERROR - NO LIPID FOUND");
+    lipids_not_found++;
 };
 
-var getOthers = function(foodsParam){
-	var re = /Other\n((.|\n(?!Source))*)/g;
-	var s = foodsParam;
-	var cont = 0;
-	var m;
+var getOthers = function(param){
+	var re = /Other\n((.*\n")*(.*\n))/g;
 
-	for(var i = 0; i < foodsParam.length; i++){
-		do {
-		    m = re.exec(s[i]);
-		    if (m) {
-		    	cont++;
-		    	others.push(m[1]);
-		        console.log("Getting others #"+cont);
-		    }
-		} while (m);
-	}
+	var m = re.exec(param);
+    if (m)
+    	return(m[1]);
+    console.log("ERROR - NO OTHER FOUND");
+    others_not_found++;
 };
 
 getFoods(text);
-/*getNames(foods);
-getProximates(foods);
-getMinerals(foods);
-getVitamins(foods);
-getLipids(foods);
-getOthers(foods);*/
 console.log("--------------------------------------------");
 console.log("Foods obtained: "+foods.length);
-console.log(foods[3000]);
-/*console.log("Names obtained: "+names.length);
-console.log("Proximates obtained: "+proximates.length);
-console.log("Minerals obtained: "+minerals.length);
-console.log("Vitamins obtained: "+vitamins.length);
-console.log("Lipids obtained: "+lipids.length);
-console.log("Others obtained: "+others.length);*/
-console.log(nf);
+console.log(foods[8117]);
+console.log(proximates_not_found);
+console.log(minerals_not_found);
+console.log(vitamins_not_found);
+console.log(lipids_not_found);
+console.log(others_not_found);
 
