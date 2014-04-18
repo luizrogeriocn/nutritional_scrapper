@@ -7,29 +7,7 @@ var minerals_not_found = 0;
 var vitamins_not_found = 0;
 var lipids_not_found = 0;
 var others_not_found = 0;
-
-var getFoods = function(textParam){
-	var re = /Basic\sReport\n((.|\n(?!==END==))*)/g;
-	var s = textParam;
-	var cont = 0;
-	var m;
-
-	do {
-	    m = re.exec(s);
-	    if (m) {
-	    	cont++;
-	    	var food = {};
-	    	food.name = getName(m[1]);
-	    	food.proximates = getProximates(m[1]);
-	    	food.minerals = getMinerals(m[1]);
-	    	food.vitamins = getVitamins(m[1]);
-	    	food.lipids = getLipids(m[1]);
-	    	food.other = getOthers(m[1]);
-	    	foods.push(food);
-	        console.log("Getting food #"+cont);
-	    }
-	} while (m);
-};
+var names_not_found = 0;
 
 var getName = function(param){
 	var re = /"Nutrient data for:\s\s\d{5},(.*)"/g;
@@ -38,6 +16,7 @@ var getName = function(param){
     if (m)
     	return(m[1]);
     console.log("ERROR - NO NAME FOUND");
+    names_not_found++;
 };
 
 var getProximates = function(param){
@@ -90,13 +69,38 @@ var getOthers = function(param){
     others_not_found++;
 };
 
+var getFoods = function(textParam){
+	var re = /Basic\sReport\n((.|\n(?!==END==))*)/g;
+	var s = textParam;
+	var cont = 0;
+	var m;
+
+	do {
+	    m = re.exec(s);
+	    if (m) {
+	    	cont++;
+	    	var food = {};
+	    	food.name = getName(m[1]);
+	    	food.proximates = getProximates(m[1]);
+	    	food.minerals = getMinerals(m[1]);
+	    	food.vitamins = getVitamins(m[1]);
+	    	food.lipids = getLipids(m[1]);
+	    	food.other = getOthers(m[1]);
+	    	foods.push(food);
+	        console.log("Getting food #"+cont);
+	    }
+	} while (m);
+};
+
 getFoods(text);
 console.log("--------------------------------------------");
 console.log("Foods obtained: "+foods.length);
-console.log(foods[8117]);
-console.log(proximates_not_found);
-console.log(minerals_not_found);
-console.log(vitamins_not_found);
-console.log(lipids_not_found);
-console.log(others_not_found);
+console.log("--------------------------------------------");
+console.log("Names not found: "+names_not_found);
+console.log("Proximates not found: "+proximates_not_found);
+console.log("Minerals not found: "+minerals_not_found);
+console.log("Vitamins not found: "+vitamins_not_found);
+console.log("Lipids not found: "+lipids_not_found);
+console.log("Others not found: "+others_not_found);
+console.log("--------------------------------------------");
 
