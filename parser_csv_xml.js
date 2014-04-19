@@ -8,6 +8,39 @@ var get_nome = function(param){
     	return m[1];
 }
 
+var get_each_nutrient = function(param, n){
+	var reg_exps = [];
+	reg_exps.push(/"(.*)"/g);
+	reg_exps.push(/",([^0-9]*),/g);
+	reg_exps.push(/[^0-9],(([0-9]|\.)*),/g);
+
+	var results = [];
+
+	do {
+		m = reg_exps[n].exec(param);
+		if(m){
+			results.push(m[1]);
+		}
+	} while(m);
+	return results;
+} 
+
+var get_nutrients = function(param){
+	var nomes = get_each_nutrient(param, 0);
+	var units = get_each_nutrient(param, 1);
+	var amounts = get_each_nutrient(param, 2);
+	var nutrients = [];
+
+	for(var i = 0; i < nomes.length; i++){
+		var nutrient = {};
+		nutrient.nome = nomes[i];
+		nutrient.unit = units[i];
+		nutrient.amount = amounts[i];
+		nutrients.push(nutrient);
+	}
+	return nutrients;
+};
+
 var get_attributes = function(food, n){
 	var reg_exps = [];
 	reg_exps.push(/Proximates\n((.*\n")*(.*\n))/g);
@@ -19,67 +52,6 @@ var get_attributes = function(food, n){
 	var m = reg_exps[n].exec(food);
     if (m)
     	return(get_nutrients(m[1]));
-};
-
-var get_amounts = function(param){
-	var re = /[^0-9],(([0-9]|\.)*),/g;
-	var s = param;
-	var m;
-	var amounts = [];
-
-	do {
-		m = re.exec(s);
-		if(m){
-			amounts.push(m[1]);
-		}
-	} while(m);
-	return amounts;
-};
-
-var get_units = function(param){
-	var re = /",([^0-9]*),/g;
-	var s = param;
-	var m;
-	var units = [];
-
-	do {
-		m = re.exec(s);
-		if(m){
-			units.push(m[1]);
-		}
-	} while(m);
-	return units;
-};
-
-var get_names = function(param){
-	var re = /"(.*)"/g;
-	var s = param;
-	var m;
-	var names = [];
-
-	do {
-		m = re.exec(s);
-		if(m){
-			names.push(m[1]);
-		}
-	} while(m);
-	return names;
-};
-
-var get_nutrients = function(param){
-	var nomes = get_names(param);
-	var units = get_units(param);
-	var amounts = get_amounts(param);
-	var nutrients = [];
-
-	for(var i = 0; i < nomes.length; i++){
-		var nutrient = {};
-		nutrient.nome = nomes[i];
-		nutrient.unit = units[i];
-		nutrient.amount = amounts[i];
-		nutrients.push(nutrient);
-	}
-	return nutrients;
 };
 
 var get_foods = function(param){
@@ -101,11 +73,11 @@ var get_foods = function(param){
 	    	food.lipids = get_attributes(m[1], 3);
 	    	food.other = get_attributes(m[1], 4);
 	    	foods.push(food);
-	        console.log("Getting food #"+cont);
+	        //console.log("Getting food #"+cont);
 	    }
 	} while (m);
 	return foods;
 };
 
 var result = get_foods(text);
-console.log(result[321]);
+//console.log(result[7665]);
