@@ -1,5 +1,5 @@
 var fs = require('fs');
-var text = fs.readFileSync('/home/roger/Documents/scrapper/results.txt','utf8');
+var text = fs.readFileSync('results.txt','utf8');
 
 var getAttributes = function(food, n){
 	var reg_exps = [];
