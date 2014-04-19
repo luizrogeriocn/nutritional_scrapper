@@ -1,6 +1,3 @@
-nutritional_scrapper
-====================
-
 ##A simple data retriever and parser script.
 This application aims to get more than eight thousand food's nutritional information from USDA website and parse it to a processable XML file.
 
