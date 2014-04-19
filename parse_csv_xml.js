@@ -103,4 +103,3 @@ console.log("Vitamins not found: "+vitamins_not_found);
 console.log("Lipids not found: "+lipids_not_found);
 console.log("Others not found: "+others_not_found);
 console.log("--------------------------------------------");
-
