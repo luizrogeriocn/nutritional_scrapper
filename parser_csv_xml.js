@@ -1,7 +1,7 @@
 var fs = require('fs');
 var text = fs.readFileSync('results.txt','utf8');
 
-var getAttributes = function(food, n){
+var get_attributes = function(food, n){
 	var reg_exps = [];
 	reg_exps.push(/"Nutrient data for:\s\s\d{5},(.*)"/g);
 	reg_exps.push(/Proximates\n((.*\n")*(.*\n))/g);
@@ -15,9 +15,54 @@ var getAttributes = function(food, n){
     	return(m[1]);
 };
 
-var getFoods = function(textParam){
+var get_values = function(param){
+	var re = /[^0-9],(([0-9]|\.)*),/g;
+	var s = param;
+	var m;
+	var values = [];
+
+	do {
+		m = re.exec(s);
+		if(m){
+			values.push(m[1]);
+		}
+	} while(m);
+	return values;
+};
+
+var get_units = function(param){
+	var re = /",([^0-9]*),/g;
+	var s = param;
+	var m;
+	var units = [];
+
+	do {
+		m = re.exec(s);
+		if(m){
+			units.push(m[1]);
+		}
+	} while(m);
+	return units;
+};
+
+var get_names = function(param){
+	var re = /"(.*)"/g;
+	var s = param;
+	var m;
+	var names = [];
+
+	do {
+		m = re.exec(s);
+		if(m){
+			names.push(m[1]);
+		}
+	} while(m);
+	return names;
+};
+
+var get_foods = function(param){
 	var re = /Basic\sReport\n((.|\n(?!==END==))*)/g;
-	var s = textParam;
+	var s = param;
 	var cont = 0;
 	var m;
 	var foods = [];
@@ -27,12 +72,12 @@ var getFoods = function(textParam){
 	    if (m) {
 	    	cont++;
 	    	var food = {};
-	    	food.nome = getAttributes(m[1], 0);
-	    	food.proximates = getAttributes(m[1], 1);
-	    	food.minerals = getAttributes(m[1], 2);
-	    	food.vitamins = getAttributes(m[1], 3);
-	    	food.lipids = getAttributes(m[1], 4);
-	    	food.other = getAttributes(m[1], 5);
+	    	food.nome = get_attributes(m[1], 0);
+	    	food.proximates = get_attributes(m[1], 1);
+	    	food.minerals = get_attributes(m[1], 2);
+	    	food.vitamins = get_attributes(m[1], 3);
+	    	food.lipids = get_attributes(m[1], 4);
+	    	food.other = get_attributes(m[1], 5);
 	    	foods.push(food);
 	        console.log("Getting food #"+cont);
 	    }
@@ -40,4 +85,11 @@ var getFoods = function(textParam){
 	return foods;
 };
 
-var result = getFoods(text);
+var result = get_foods(text);
+console.log(result[321]);
+var names = get_names(result[321].proximates);
+console.log(names);
+var units = get_units(result[321].proximates);
+console.log(units);
+var values = get_values(result[321].proximates);
+console.log(values);
