@@ -1,12 +1,14 @@
 var fs = require('fs');
 var text = fs.readFileSync('results.txt','utf8');
 
+var attributes = {names: ['Proximates', 'Minerals', 'Vitamins', 'Lipids', 'Other'], regex_pattern: "\n((.*\n\")*(.*\n))"};
+
 var get_nome = function(param){
 	var reg_exp = /"Nutrient data for:\s\s\d{5},(.*)"/g;
 	var m = reg_exp.exec(param);
     if (m)
     	return m[1];
-}
+};
 
 var get_each_nutrient = function(param, n){
 	var reg_exps = [];
@@ -23,7 +25,7 @@ var get_each_nutrient = function(param, n){
 		}
 	} while(m);
 	return results;
-} 
+};
 
 var get_nutrients = function(param){
 	var nomes = get_each_nutrient(param, 0);
@@ -41,43 +43,38 @@ var get_nutrients = function(param){
 	return nutrients;
 };
 
-var get_attributes = function(food, n){
-	var reg_exps = [];
-	reg_exps.push(/Proximates\n((.*\n")*(.*\n))/g);
-	reg_exps.push(/Minerals\n((.*\n")*(.*\n))/g);
-	reg_exps.push(/Vitamins\n((.*\n")*(.*\n))/g);
-	reg_exps.push(/Lipids\n((.*\n")*(.*\n))/g);
-	reg_exps.push(/Other\n((.*\n")*(.*\n))/g);
+var get_attributes = function(foodParam){
+	var names = attributes.names;
+	var regex_pattern = attributes.regex_pattern;
 
-	var m = reg_exps[n].exec(food);
-    if (m)
-    	return(get_nutrients(m[1]));
+	var food = {};
+	food.nome = get_nome(foodParam);
+
+	for(var i = 0; i < attributes.names.length; i++){
+		var regex = new RegExp(names[i]+regex_pattern,"g");
+		var m = regex.exec(foodParam);
+		if(m){
+			food[names[i]] = get_nutrients(m[1]);
+		}
+	}
+	return food;
 };
 
 var get_foods = function(param){
 	var re = /Basic\sReport\n((.|\n(?!==END==))*)/g;
 	var s = param;
-	var cont = 0;
 	var m;
 	var foods = [];
 
 	do {
 	    m = re.exec(s);
 	    if (m) {
-	    	cont++;
 	    	var food = {};
-	    	food.nome = get_nome(m[1]);
-	    	food.proximates = get_attributes(m[1], 0);
-	    	food.minerals = get_attributes(m[1], 1);
-	    	food.vitamins = get_attributes(m[1], 2);
-	    	food.lipids = get_attributes(m[1], 3);
-	    	food.other = get_attributes(m[1], 4);
+	    	food = get_attributes(m[1]);
 	    	foods.push(food);
-	        //console.log("Getting food #"+cont);
 	    }
 	} while (m);
 	return foods;
 };
 
 var result = get_foods(text);
-//console.log(result[7665]);
