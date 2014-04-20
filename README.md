@@ -1,6 +1,11 @@
 ##A simple data retriever and parser script.
 This application aims to get more than eight thousand food's nutritional information from USDA website and parse it to a processable XML file.
 
+##Makefile
+- __get:__ Runs the scrapper script and append data to results.txt(may take several minutes to retrieve all data).
+- __parse:__ Parses results.txt to foods.xml (not real XML markup yet).
+- __clean:__ Deletes results.txt and food.xml files.
+
 ##Files
 
 ###scrapper.js
