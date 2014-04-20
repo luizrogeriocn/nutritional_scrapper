@@ -14,9 +14,11 @@ This application aims to get more than eight thousand food's nutritional informa
 - __Implemented:__ All the information is already parsed to a JSON object.
 - __To be implemented:__ Parse the JSON object to XML.
 
+###foods.xml
+- XML file containing all the parsed food information.
+
 ###old_parser.js
 - Old method used to parse results.txt (kept for references).
-
 
 
 

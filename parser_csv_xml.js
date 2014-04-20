@@ -2,6 +2,7 @@ var fs = require('fs');
 var text = fs.readFileSync('results.txt','utf8');
 
 var attributes = {names: ['Proximates', 'Minerals', 'Vitamins', 'Lipids', 'Other'], regex_pattern: "\n((.*\n\")*(.*\n))"};
+var nutri_opt = {names: ['nome', 'unit', 'amount'], regex: ["/\"(.*)\"/g", "/\",([^0-9]*),/g", "/[^0-9],(([0-9]|\.)*),/g"]};
 
 var get_nome = function(param){
 	var reg_exp = /"Nutrient data for:\s\s\d{5},(.*)"/g;
@@ -77,4 +78,43 @@ var get_foods = function(param){
 	return foods;
 };
 
+var nutrients_to_xml = function(attribute, options){
+	var names = options.names;
+	var nutri_str = '\n';
+	for(var i = 0; i < attribute.length; i++){
+		for(var j = 0; j < names.length; j++){
+			nutri_str += attribute[i][names[j]]+' ';
+		}
+		nutri_str += '\n';
+	}
+	return nutri_str;
+};
+
+var attributes_to_xml = function(food, options){
+	var names = options.names;
+	var attr_str = '';
+
+	for(var i = 0; i < names.length; i++){
+		if(food[names[i]]){
+			attr_str += '-'+names[i];
+			var nutrients = nutrients_to_xml(food[names[i]], nutri_opt);
+			attr_str += nutrients;
+		}
+	}
+
+	return attr_str;
+};
+
+var food_to_xml = function(food){
+	var food_str = 'begin\n'+'+'+food.nome+'\n';
+	var attr_str = attributes_to_xml(food, attributes);
+	food_str += attr_str+'end\n';
+	return food_str;
+};
+
+/*Show me some magic!*/
 var result = get_foods(text);
+for(var i = 0; i < result.length; i++){
+	var xml_element = food_to_xml(result[i]);
+	fs.appendFileSync('foods.xml', xml_element);
+}
