@@ -5,20 +5,18 @@ This application aims to get more than eight thousand food's nutritional informa
 ##Files
 
 ###Makefile
-- __get:__ Runs the scrapper script and append data to results.txt(may take several minutes to retrieve all data).
+- __get:__ Runs the scrapper script (may take several minutes to retrieve all data).
 - __parse:__ Parses results.txt to foods.xml (not real XML markup yet).
 - __clean:__ Deletes results.txt and food.xml files.
 
 ####scrapper.js
-- Script to retrieve all the information via HTTP requests and store it.
+- Script to retrieve all data via HTTP requests and store it in results.txt.
 
 ####results.txt
-- File where the retrieved information is stored.
+- Stores retrieved data.
 
 ####parse_csv_xml.js
 - Script to process results.txt to XML. 
-- __Implemented:__ All the information is already parsed to a JSON object.
-- __To be implemented:__ Parse the JSON object to XML.
 
 ####foods.xml
 - XML file containing all the parsed food information.
